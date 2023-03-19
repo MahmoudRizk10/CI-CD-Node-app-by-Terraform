@@ -1,0 +1,52 @@
+pipeline {
+  agent any
+  
+  stages {
+    stage('Fetch code from github') {
+      steps {
+        git 'https://github.com/MahmoudRizk10/CI-CD-Node-app-by-Terraform.git'
+      }
+    }
+
+    
+    stage('build image') {
+      steps {
+        dir ('node-app') {
+            
+            sh label: '', script: "docker build -t node-app ."
+        
+        }
+      }
+    }
+    
+    stage('push image to ecr ') {
+      steps {
+         
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
+            sh label: '', script: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 933065839119.dkr.ecr.us-east-1.amazonaws.com"
+            sh label: '', script: "docker tag node-app 933065839119.dkr.ecr.us-east-1.amazonaws.com/workshop:latest"
+            sh label: '', script: "docker push 933065839119.dkr.ecr.us-east-1.amazonaws.com/workshop:latest"
+            }    
+        }
+    }
+    
+    stage('build infra') {
+      steps {
+        dir('Terraform') {
+         withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding',
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+          credentialsId: 'aws-cred',
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+        ]]) {
+        
+            sh label: '', script: 'terraform init'
+            // sh label: '', script: 'terraform apply -auto-approve'
+            
+           }
+         
+        }
+      }
+    }
+  }
+}
