@@ -1,1 +1,13 @@
-[View the Notion page](https://www.notion.so/CI-CD-Node-App-On-AWS-by-Terraform-f23726780303472bbc65db4c0d0fbec0?pvs=4)
+# CI/CD Pipeline build Node-App on AWS by Terraform
+
+- Fetch code from Github Repo
+- Build Image
+- Push Image on ECR
+- Build and Provisioning Infrastructure On AWS
+- Node App is Running
+
+----------------------------------------------------------------------------------
+
+### Diagram of Infrastructure On AWS
+![aws drawio (1)](https://user-images.githubusercontent.com/29982582/226214220-981b17ea-578f-47be-a2e0-9eddb8b59424.png)
+
